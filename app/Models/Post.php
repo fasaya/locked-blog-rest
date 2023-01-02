@@ -39,6 +39,21 @@ class Post extends Model
         ];
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function categories()
+    {
+        return $this->morphMany(CategoryContent::class, 'content')->with('category');
+    }
+
+    public function passwords()
+    {
+        return $this->morphMany(PasswordContent::class, 'content');
+    }
+
     public static function boot()
     {
         parent::boot();

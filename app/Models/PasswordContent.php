@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordContent extends Model
 {
     use HasFactory;
+
+    public function password()
+    {
+        return $this->belongsTo(Password::class, 'content_id', 'id');
+    }
 }

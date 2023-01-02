@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class PostController extends BaseController
      */
     public function index()
     {
-        $posts = Post::whereStatus(1)->paginate(10);
+        $posts = Post::whereStatus(1)->with('categories')->paginate(10);
 
-        return $this->sendResponse($posts);
+        return PostResource::collection($posts);
     }
 
     /**
