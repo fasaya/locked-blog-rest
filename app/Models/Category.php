@@ -19,6 +19,14 @@ class Category extends Model
         'updated_at',
     ];
 
+    /**
+     * Get all of the posts that are assigned this category.
+     */
+    public function posts()
+    {
+        return $this->morphedByMany(Post::class, 'content', 'category_contents');
+    }
+
     public static function boot()
     {
         parent::boot();

@@ -46,7 +46,8 @@ class Post extends Model
 
     public function categories()
     {
-        return $this->morphMany(CategoryContent::class, 'content')->with('category');
+        return $this->morphToMany(Category::class, 'content', 'category_contents')
+            ->where('categories.status', 1);
     }
 
     public function passwords()
