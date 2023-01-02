@@ -28,7 +28,17 @@ Route::get('/', function () {
     ], 200);
 });
 
+Route::group(['prefix' => 'v1/'], function () {
 
+    Route::get('/', function () {
+        return \Response::json([
+            'data' => [
+                'message' => 'Hello world!',
+                'status_code' => 200
+            ]
+        ], 200);
+    });
+});
 
 
 Route::fallback(function () {
