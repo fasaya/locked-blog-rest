@@ -22,11 +22,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 
+Route::get('posts', [App\Http\Controllers\Api\PostController::class, 'index']);
+Route::get('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    // Route::resource('products', ProductController::class);
+    Route::post('posts', [App\Http\Controllers\Api\PostController::class, 'store']);
+    Route::put('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'update']);
+    Route::delete('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'destroy']);
 });
-
-
 
 Route::fallback(function () {
     return \Response::json([
