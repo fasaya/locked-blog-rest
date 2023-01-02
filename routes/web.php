@@ -14,5 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->away('https://fasaya.id');
+    return \Response::json([
+        'data' => [
+            'message' => 'Hello world!',
+            'status_code' => 200
+        ]
+    ], 200);
+});
+
+
+Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['role:admin', 'auth']], function () {
+
+    // Route::get('users-search', [App\Http\Controllers\Admin\UserController::class, 'search'])->name('users.search');
+
+    // Route::resource('promo', App\Http\Controllers\Admin\MerchantPromoController::class);
 });
