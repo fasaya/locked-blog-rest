@@ -19,11 +19,14 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 
 Route::get('posts', [App\Http\Controllers\Api\PostController::class, 'index']);
 Route::get('posts/{id}', [App\Http\Controllers\Api\PostController::class, 'show']);
+
+Route::get('categories', [App\Http\Controllers\Api\CategoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('posts', [App\Http\Controllers\Api\PostController::class, 'store']);

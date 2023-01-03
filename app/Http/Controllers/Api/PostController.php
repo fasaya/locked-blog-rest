@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Resources\PostResource;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -14,9 +15,14 @@ class PostController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::whereStatus(1)->with('categories')->paginate(10);
+        if (isset($request->category)) {
+            $posts = Category::where('slug', $request->category)->first()->posts()
+                ->whereStatus(1)->orderBy('published_at', 'DESC')->paginate(10)->withQueryString();
+        } else {
+            $posts = Post::whereStatus(1)->orderBy('published_at', 'DESC')->paginate(10)->withQueryString();
+        }
 
         return PostResource::collection($posts);
     }
