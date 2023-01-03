@@ -67,14 +67,14 @@ class PostController extends BaseController
             return $this->sendError();
         }
 
-        $passes = $post->passwords_count > 0; // private / have password
+        $is_private = $post->passwords_count > 0 ? true : false;
 
         $validator = Validator::make($request->all(), [
-            'passkey' => $passes ? 'required' : 'nullable',
+            'passkey' => $is_private ? 'required' : 'nullable',
         ]);
 
-        $validator->after(function ($validator) use ($passes, $post, $request) {
-            if ($passes) {
+        $validator->after(function ($validator) use ($is_private, $post, $request) {
+            if ($is_private) {
                 // match password
                 $isPassCorrect = false;
                 foreach ($post->passwords as $item) {
