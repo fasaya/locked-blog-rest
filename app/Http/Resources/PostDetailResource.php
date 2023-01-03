@@ -22,7 +22,7 @@ class PostDetailResource extends JsonResource
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'published_at' => $this->published_at ?? $this->created_at,
-            'is_public' => $this->passwords->count() > 0 ? false : true,
+            'is_private' => $this->passwords_count > 0 ? true : false,
             'categories' => CategoryResource::collection($this->categories),
         ];
     }

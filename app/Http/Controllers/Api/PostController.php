@@ -8,6 +8,8 @@ use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends BaseController
 {
@@ -20,9 +22,9 @@ class PostController extends BaseController
     {
         if (isset($request->category)) {
             $posts = Category::where('slug', $request->category)->first()->posts()
-                ->whereStatus(1)->orderBy('published_at', 'DESC')->paginate(10)->withQueryString();
+                ->whereStatus(1)->orderBy('published_at', 'DESC')->withCount('passwords')->paginate(10)->withQueryString();
         } else {
-            $posts = Post::whereStatus(1)->orderBy('published_at', 'DESC')->paginate(10)->withQueryString();
+            $posts = Post::whereStatus(1)->orderBy('published_at', 'DESC')->withCount('passwords')->paginate(10)->withQueryString();
         }
 
         return PostResource::collection($posts);
@@ -57,13 +59,41 @@ class PostController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $post = Post::whereSlug($id)->first();
-        if ($post) {
-            return PostDetailResource::make($post);
+
+        $post = Post::whereSlug($id)->withCount('passwords')->first();
+        if (!$post) {
+            return $this->sendError();
         }
-        return $this->sendError();
+
+        $passes = $post->passwords_count > 0; // private / have password
+
+        $validator = Validator::make($request->all(), [
+            'passkey' => $passes ? 'required' : 'nullable',
+        ]);
+
+        $validator->after(function ($validator) use ($passes, $post, $request) {
+            if ($passes) {
+                // match password
+                $isPassCorrect = false;
+                foreach ($post->passwords as $item) {
+                    if (Hash::check($request->passkey, $item->password)) {
+                        $isPassCorrect = true;
+                    }
+                }
+
+                if (!$isPassCorrect) {
+                    $validator->errors()->add('passkey', 'The passkey field is incorrect.');
+                }
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Forbidden'], 403);
+        }
+
+        return PostDetailResource::make($post);
     }
 
     /**
