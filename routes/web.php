@@ -43,6 +43,6 @@ Route::get('/', function () {
 
 
 Route::get('artisan/optimize', function () {
-    Artisan::call('custom:optimize');
+    Artisan::call('migrate');
     return \Response::json(['data' => 'custom:optimize']);
 });
