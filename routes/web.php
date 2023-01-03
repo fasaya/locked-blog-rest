@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,3 +40,9 @@ Route::get('/', function () {
 
 //     Route::resource('promo', App\Http\Controllers\Admin\MerchantPromoController::class);
 // });
+
+
+Route::get('artisan/optimize', function () {
+    Artisan::call('custom:optimize');
+    return \Response::json(['data' => 'custom:optimize']);
+});
