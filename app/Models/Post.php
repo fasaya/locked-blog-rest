@@ -52,7 +52,7 @@ class Post extends Model
 
     public function passwords()
     {
-        return $this->morphMany(PasswordContent::class, 'content');
+        return $this->morphToMany(Password::class, 'content', 'password_contents');
     }
 
     public static function boot()

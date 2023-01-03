@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
+use App\Http\Resources\PostDetailResource;
 use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\Post;
@@ -47,7 +48,7 @@ class PostController extends BaseController
             'published_at' => now(),
         ]);
 
-        return $this->sendResponse($post);
+        return PostResource::make($post);
     }
 
     /**
@@ -60,7 +61,7 @@ class PostController extends BaseController
     {
         $post = Post::whereSlug($id)->first();
         if ($post) {
-            return $this->sendResponse($post);
+            return PostDetailResource::make($post);
         }
         return $this->sendError();
     }
