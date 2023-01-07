@@ -63,9 +63,9 @@ class AuthController extends BaseController
      */
     public function logout(Request $request)
     {
-        $user = Auth::user()->token();
-        $user->revoke();
+        // Revoke the token that was used to authenticate the current request...
+        $data = $request->user()->currentAccessToken()->delete();
 
-        return $this->sendResponse($success, 'User logout successfully.');
+        return $this->sendResponse($data, 'Token revoke');
     }
 }
